@@ -43,7 +43,7 @@ No existing app scaffold, package manager, deployment setup, tests, or linting c
 Read these in this order before coding:
 
 1. `DevelopmentWorkflow.md` — the human-in-the-loop development process.
-2. `CLAUDE.md` — agent rules and hard constraints.
+2. `AGENTS.md` — agent rules and hard constraints.
 3. `docs/prd.md` — product requirements for the MVP.
 4. `docs/technical_decisions.md` — stack decisions and non-goals.
 5. `tasks.md` — implementation tasks in order.
@@ -58,7 +58,7 @@ Do not give Codex the full product vision and ask it to build everything.
 Use this pattern:
 
 ```text
-Read START_HERE.md, DevelopmentWorkflow.md, CLAUDE.md, docs/prd.md, docs/technical_decisions.md, and tasks.md.
+Read START_HERE.md, DevelopmentWorkflow.md, AGENTS.md, docs/prd.md, docs/technical_decisions.md, and tasks.md.
 
 Work on exactly this task: [TASK ID AND NAME]
 
