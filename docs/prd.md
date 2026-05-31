@@ -1,125 +1,91 @@
-# hey-micki PRD
+# PRD: hey-micki MVP
 
-## Product summary
+## Product
 
-hey-micki is a voice-first coding coach for vibe coders. It helps users understand their codebase, identify what is missing before shipping, and generate a clear next prompt for a coding agent.
+hey-micki is a local coding coach for vibe coders.
 
-The weekend MVP is not the full product. It is a local demo proving that a VS Code extension can scan a repo, send context to a backend, and return useful shipping guidance.
+It has two pieces:
 
-## Target user
+1. **VS Code plugin** — scans the current project.
+2. **macOS app** — lets the user talk or type to Micki.
 
-A vibe coder or early-stage builder using VS Code with coding agents such as Cursor, Codex, Claude, or similar tools.
+The plugin gives the macOS app project context. The macOS app gives the user clear advice.
 
-They can generate code quickly, but often need help answering:
+## User problem
 
-- What is this project?
-- What should I do next?
-- Is this ready to ship?
-- What production pieces am I missing?
-- What prompt should I give my coding agent next?
+Vibe coders can build quickly, but they often lose track of:
 
-## Weekend MVP goal
+- what the project currently does
+- what is missing before shipping
+- what to ask the coding agent next
+- whether the app is actually ready
 
-Build a VS Code extension sidebar that scans the current workspace and sends a compact context payload to a local backend.
+## MVP goal
 
-The backend returns:
+Create a local demo where:
+
+1. the VS Code plugin scans a project
+2. the plugin sends context to the macOS app
+3. the macOS app stores the latest context in memory
+4. the user asks a typed question
+5. Micki replies with a short answer and a next-step prompt
+
+Voice can come after typed chat works.
+
+## MVP user flow
+
+1. User opens a project in VS Code.
+2. User runs **Send Context to Micki**.
+3. Plugin scans basic project context.
+4. Plugin sends this context to the macOS app over localhost.
+5. User opens the macOS app.
+6. User asks: **What should I do next?**
+7. Micki shows a useful answer and a prompt to paste into a coding agent.
+
+## Project context to collect
+
+Collect only simple, useful context:
+
+- file tree
+- package files
+- README
+- current file
+- basic stack signals
+- missing production signals
+
+## Micki should show
 
 - project summary
 - detected stack
 - missing production pieces
-- ship readiness score
+- readiness score
 - next best step
 - simple explanation
-- prompt to paste into Cursor/Codex/Claude
+- copyable prompt for Cursor, Codex, or Claude
 
-## MVP user journey
+## Non-goals
 
-1. User opens a project in VS Code.
-2. User opens the hey-micki sidebar.
-3. User clicks **Scan Repo**.
-4. The extension safely collects project context.
-5. The extension sends context to the local backend.
-6. The backend analyses the project.
-7. The sidebar shows a practical readiness assessment.
-8. User copies the generated prompt into a coding agent.
-9. User improves the project and refreshes the readiness score.
+Do not build these in the MVP:
 
-## Context to collect
-
-The extension should collect:
-
-- workspace name
-- current file path, language, and capped content
-- capped file tree
-- package/dependency files where present
-- README content where present
-- git branch/status summary where available
-- detected framework and package manager signals
-- evidence of auth, database, deployment, payments, env handling, tests, and security basics
-
-The extension should not read local secret files.
-
-## MVP response shape
-
-The backend should return a JSON object with:
-
-```json
-{
-  "projectSummary": "Short plain-English summary of the project.",
-  "detectedStack": ["Next.js", "TypeScript"],
-  "missingProductionPieces": [
-    {
-      "name": "Authentication",
-      "status": "missing",
-      "severity": "high",
-      "evidence": "No auth-related dependencies or routes detected."
-    }
-  ],
-  "readinessScore": 42,
-  "nextBestStep": "Add environment variable handling and an example env file.",
-  "simpleExplanation": "The app has a frontend but lacks key production basics.",
-  "agentPrompt": "Paste-ready prompt for Cursor/Codex/Claude."
-}
-```
-
-## MVP acceptance criteria
-
-The MVP is complete when:
-
-- the backend runs locally
-- the extension launches in VS Code Extension Development Host
-- the sidebar appears
-- the sidebar can scan a workspace
-- the backend receives a context payload
-- the backend returns all required response fields
-- the sidebar renders the analysis clearly
-- the generated prompt can be copied
-- a manual QA checklist has been completed
-- the README explains how to run the demo
-
-## Non-goals for weekend MVP
-
-Do not build these during the weekend MVP:
-
-- standalone voice app
-- user accounts
-- database
-- persistent project history
+- accounts
 - payments
-- analytics
-- cloud deployment
+- database
+- hosted backend
+- web dashboard
 - marketplace publishing
-- GitHub PR review integration
-- direct Cursor/Codex/Claude API integration
-- complex security scanning
-- full production readiness claims
+- analytics
+- GitHub PR reviews
+- direct coding-agent integrations
+- complex deployment
 
-## Optional weekend feature
+## Done means
 
-Voice may be added only after the text flow works.
+The MVP is done when:
 
-If included, voice should be limited to a lightweight push-to-talk feature inside the VS Code webview using browser/Web Speech API capabilities where available. It must have a text fallback.
-
-## Success definition
-
-The demo should make it obvious that hey-micki can act like a senior-dev coach inside VS Code: it looks at the project, explains what matters, identifies missing shipping pieces, and gives the user a concrete next action.
+- the macOS app runs locally
+- the plugin runs in VS Code
+- the plugin sends project context to the app
+- the app shows the latest project context
+- the user can ask a typed question
+- Micki gives a useful answer and copyable prompt
+- manual QA passes
