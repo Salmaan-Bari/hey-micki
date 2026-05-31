@@ -1,83 +1,65 @@
 # Manual QA Checklist
 
-Manual QA is required before calling the MVP complete.
+Use this checklist before calling the MVP demo-ready.
 
-The purpose of this checklist is to make the human verify the product works end-to-end, not just trust passing tests.
+## Desktop app
 
-## Pre-flight
+- [ ] Desktop app starts locally.
+- [ ] `GET http://localhost:3737/health` returns `{ "ok": true }`.
+- [ ] App window opens.
+- [ ] App has a text input for asking Micki a question.
+- [ ] App can show the latest project context.
+- [ ] App can return a simple answer without a live AI model.
 
-- [ ] Repo has been pulled locally.
-- [ ] Backend dependencies are installed.
-- [ ] Extension dependencies are installed.
-- [ ] Backend starts without errors.
-- [ ] Extension compiles without errors.
-- [ ] Extension Development Host launches.
+## VS Code plugin
 
-## Backend checks
+- [ ] Plugin launches in VS Code Extension Development Host.
+- [ ] Command palette shows **Send Context to Micki**.
+- [ ] Running the command scans the open project.
+- [ ] Plugin handles no workspace open.
+- [ ] Plugin shows a clear error if the desktop app is not running.
 
-- [ ] `GET /health` returns `{ "ok": true }`.
-- [ ] `POST /api/analyse` accepts a valid sample payload.
-- [ ] Invalid payload returns a clear error.
-- [ ] Backend logs request method, route, status, and duration.
-- [ ] Backend does not require a live model key for deterministic analysis.
+## Context scan
 
-## Extension checks
+- [ ] Workspace name is collected.
+- [ ] File tree is collected.
+- [ ] `package.json` is collected when present.
+- [ ] README is collected when present.
+- [ ] Current file path/language/preview is collected when available.
+- [ ] Basic stack signals are detected.
+- [ ] Large generated folders are skipped.
 
-- [ ] Command palette shows a hey-micki command.
-- [ ] Sidebar appears in VS Code.
-- [ ] Sidebar has a visible scan button.
-- [ ] Scan button shows a loading state.
-- [ ] Extension handles no workspace open.
-- [ ] Extension handles backend offline with a clear message.
+## Plugin to app connection
 
-## Context scanning checks
+- [ ] Desktop app is running.
+- [ ] Plugin sends context to `http://localhost:3737/context`.
+- [ ] Desktop app confirms context was received.
+- [ ] Desktop app shows or uses the latest context.
 
-- [ ] Workspace name is detected.
-- [ ] File tree is extracted.
-- [ ] Generated folders are skipped.
-- [ ] `package.json` is read when present.
-- [ ] README is read when present.
-- [ ] Current file info is included when an editor is open.
-- [ ] Framework/package-manager signals are detected where obvious.
-- [ ] Missing production signals are generated.
+## Micki response
 
-## Analysis rendering checks
+Ask in the desktop app:
 
-- [ ] Project summary appears.
-- [ ] Detected stack appears.
-- [ ] Missing production pieces appear.
-- [ ] Readiness score appears.
-- [ ] Next best step appears.
-- [ ] Simple explanation appears.
-- [ ] Generated agent prompt appears.
-- [ ] Copy prompt button works.
+```text
+What should I do next?
+```
 
-## Demo checks
+Check that Micki shows:
 
-- [ ] Sample project opens successfully.
-- [ ] hey-micki scans sample project.
-- [ ] It identifies missing production pieces.
-- [ ] It gives a useful next best step.
-- [ ] The generated prompt is specific and paste-ready.
-- [ ] The full demo can be completed in 3-5 minutes.
+- [ ] project summary
+- [ ] detected stack
+- [ ] missing production pieces
+- [ ] readiness score
+- [ ] next best step
+- [ ] simple explanation
+- [ ] copyable prompt for Cursor/Codex/Claude
 
-## Optional voice checks
+## Done
 
-Only run these if voice is implemented.
+The MVP is demo-ready when:
 
-- [ ] Text input still works without voice.
-- [ ] Push-to-talk appears only where supported.
-- [ ] Speech transcript appears correctly enough for demo.
-- [ ] Spoken response can be muted or skipped.
-- [ ] Voice failure does not break the text flow.
-
-## MVP sign-off
-
-The MVP can be considered demo-ready only when:
-
-- [ ] all required backend checks pass
-- [ ] all required extension checks pass
-- [ ] all required context scanning checks pass
-- [ ] all required analysis rendering checks pass
-- [ ] demo script has been rehearsed
-- [ ] no non-MVP features were accidentally built
+- [ ] desktop app works
+- [ ] VS Code plugin works
+- [ ] plugin sends context to app
+- [ ] app answers a typed question using the latest context
+- [ ] the demo can be completed in 3-5 minutes
