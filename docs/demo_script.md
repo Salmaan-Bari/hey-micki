@@ -1,144 +1,90 @@
-# MVP Demo Script
+# Demo Script
 
-This script is for a 3-5 minute weekend MVP demo.
+Goal: show that the VS Code plugin gives context to the macOS app, and the user can ask Micki what to do next.
 
-## Demo goal
+## Setup
 
-Show that hey-micki can inspect a VS Code project, explain what it is, identify missing shipping pieces, and generate a useful next prompt for a coding agent.
+Before the demo:
 
-## Setup before demo
-
-- Backend is running locally on port `8787`.
-- VS Code Extension Development Host is open.
-- A sample project is open.
-- The sample project is intentionally incomplete.
-- The hey-micki sidebar is visible.
-
-## Sample project idea
-
-Use a tiny Next.js-style app that has:
-
-- `package.json`
-- `README.md`
-- one page/component file
-- no auth
-- no database
-- no deployment config
-- no tests
-- no environment example
-
-This gives hey-micki useful things to detect.
+- desktop app is running
+- VS Code plugin is running in Extension Development Host
+- sample project is open in VS Code
 
 ## Demo flow
 
-### 1. Set the scene
+### 1. Explain the idea
 
 Say:
 
 ```text
-This is hey-micki. It is a senior-dev style coding coach for vibe coders. The idea is simple: while you build quickly with AI coding tools, hey-micki helps you understand what you have, what is missing, and what to ask your coding agent to do next.
+hey-micki is a coding coach for vibe coders. The plugin reads project context from VS Code. The macOS app is where I talk to Micki.
 ```
 
-### 2. Show the project
+### 2. Show the desktop app
 
-Open the sample project in VS Code.
+Open the macOS app.
+
+Show that it is waiting for project context.
+
+### 3. Show the VS Code project
+
+Open a small sample project in VS Code.
 
 Say:
 
 ```text
-Here is a small app. It looks like it has the start of a real product, but it is not obvious whether it is actually ready to ship.
+This is the project I want Micki to understand.
 ```
 
-### 3. Open hey-micki
+### 4. Send context
 
-Open the sidebar.
-
-Say:
+Run the VS Code command:
 
 ```text
-Instead of manually checking the whole repo, I can ask hey-micki to scan it.
+Send Context to Micki
 ```
-
-### 4. Scan repo
-
-Click **Scan Repo**.
 
 Expected result:
 
-- loading state appears
-- backend logs request
-- sidebar updates with analysis
+- plugin scans the project
+- plugin sends context to the desktop app
+- desktop app confirms context was received
 
-### 5. Explain result
+### 5. Ask Micki
 
-Point to:
+In the desktop app, ask:
+
+```text
+What should I do next?
+```
+
+Expected result:
+
+Micki shows:
 
 - project summary
 - detected stack
+- missing production pieces
 - readiness score
-- missing pieces
 - next best step
+- copyable prompt
+
+### 6. Close the demo
 
 Say:
 
 ```text
-It has detected the stack, summarised the project, and scored how ready it is to ship. More importantly, it tells me the exact production pieces that are missing.
+The simple loop works: VS Code gives Micki context, and the macOS app gives me a useful next step and a prompt I can paste into my coding agent.
 ```
 
-### 6. Show next best step
+## Fallback
 
-Say:
+If the plugin fails, manually send a sample request to the desktop app endpoint.
 
-```text
-The key part is that it does not give me a huge vague roadmap. It gives me the next best step.
-```
+If the desktop app UI fails, show the local API response in the terminal.
 
-### 7. Show generated prompt
-
-Click copy prompt.
-
-Say:
+If voice is not ready, say:
 
 ```text
-Then it turns that next step into a scoped prompt I can paste into Cursor, Codex, or Claude. This keeps the coding agent focused on one task instead of going off and changing half the app.
-```
-
-### 8. Close with value proposition
-
-Say:
-
-```text
-The MVP is local and simple, but the core loop is here: inspect the project, explain what matters, identify what is missing, and generate the next build prompt. That is the foundation for a voice-first coding coach.
-```
-
-## Success criteria
-
-The demo works if the viewer understands:
-
-- hey-micki lives inside VS Code
-- it reads useful project context
-- it helps users ship with better engineering discipline
-- it gives specific next actions
-- it pairs naturally with coding agents
-
-## Fallback plan
-
-If the sidebar fails:
-
-1. Show backend `/api/analyse` with a sample payload.
-2. Show the JSON response.
-3. Explain that the extension UI is the next layer.
-
-If the backend fails:
-
-1. Show the extension scanner output.
-2. Show the intended API schema.
-3. Explain the integration step.
-
-If voice is not ready:
-
-Say:
-
-```text
-Voice is deliberately deferred until the text-based loop works. The weekend MVP proves the coaching engine first.
+Voice comes after typed chat. The MVP proves the context and coaching loop first.
 ```
