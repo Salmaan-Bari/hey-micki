@@ -25,12 +25,13 @@ code {
 .app-shell {
   display: grid;
   min-height: 100vh;
-  place-items: center;
+  align-items: start;
+  justify-items: center;
   padding: 32px;
 }
 
 .intro {
-  width: min(640px, 100%);
+  width: min(760px, 100%);
 }
 
 .eyebrow {
@@ -83,20 +84,102 @@ p {
   background: #2f8a55;
 }
 
+.ask-panel {
+  margin-top: 18px;
+  border: 1px solid #ded7c8;
+  border-radius: 8px;
+  background: #fffdf8;
+  padding: 18px;
+}
+
+.ask-form label {
+  display: block;
+  margin-bottom: 8px;
+  color: #2d2a24;
+  font-weight: 700;
+}
+
+.question-row {
+  display: flex;
+  gap: 10px;
+}
+
+input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #cfc5b2;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #201f1b;
+  font: inherit;
+  padding: 10px 12px;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  background: #201f1b;
+  color: #ffffff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 10px 16px;
+  white-space: nowrap;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.secondary-button {
+  border: 1px solid #cfc5b2;
+  background: #ffffff;
+  color: #201f1b;
+}
+
+.answer-card {
+  margin-top: 18px;
+  border-top: 1px solid #ded7c8;
+  padding-top: 18px;
+}
+
+h2,
+h3 {
+  margin: 0;
+  color: #201f1b;
+}
+
+h2 {
+  font-size: 1.35rem;
+}
+
+h3 {
+  font-size: 1rem;
+}
+
 .muted {
   margin-top: 12px;
   color: #6f6655;
   font-size: 0.98rem;
 }
 
-.context-details {
+.error-text {
+  margin-top: 12px;
+  color: #9a3412;
+  font-size: 0.98rem;
+}
+
+.context-details,
+.answer-details {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   margin: 18px 0 0;
 }
 
-.context-details div {
+.context-details div,
+.answer-details div {
   min-width: 0;
 }
 
@@ -114,8 +197,40 @@ dd {
   font-size: 1rem;
 }
 
+.prompt-block {
+  margin-top: 18px;
+}
+
+.prompt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+pre {
+  margin: 0;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  border-radius: 8px;
+  background: #ebe6da;
+  color: #201f1b;
+  padding: 14px;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
 @media (max-width: 560px) {
-  .context-details {
+  .question-row,
+  .prompt-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .context-details,
+  .answer-details {
     grid-template-columns: 1fr;
   }
 }

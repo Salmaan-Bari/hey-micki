@@ -1,5 +1,6 @@
 import http from "node:http";
-import { getContextSummary, setLatestContext, type ProjectContext } from "./contextStore.js";
+import { answerMicki } from "./answerMicki.js";
+import { getContextSummary, getLatestContext, setLatestContext, type ProjectContext } from "./contextStore.js";
 
 const PORT = 3737;
 const MAX_BODY_BYTES = 1024 * 1024;
@@ -33,11 +34,24 @@ export function startServer() {
     }
 
     if (request.method === "POST" && request.url === "/context") {
-      readJsonBody(request)
+      readJsonBody<ProjectContext>(request)
         .then((context) => {
           setLatestContext(context);
           response.writeHead(200);
           response.end('{ "ok": true, "message": "Context received" }');
+        })
+        .catch((error) => {
+          response.writeHead(error.statusCode ?? 400);
+          response.end(JSON.stringify({ ok: false, error: error.message }));
+        });
+      return;
+    }
+
+    if (request.method === "POST" && request.url === "/ask") {
+      readJsonBody<{ question?: string }>(request)
+        .then(({ question }) => {
+          response.writeHead(200);
+          response.end(JSON.stringify(answerMicki(question ?? "", getLatestContext())));
         })
         .catch((error) => {
           response.writeHead(error.statusCode ?? 400);
@@ -64,7 +78,7 @@ function setJsonHeaders(response: http.ServerResponse) {
   response.setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
-function readJsonBody(request: http.IncomingMessage): Promise<ProjectContext> {
+function readJsonBody<T>(request: http.IncomingMessage): Promise<T> {
   return new Promise((resolve, reject) => {
     let body = "";
 
@@ -81,7 +95,7 @@ function readJsonBody(request: http.IncomingMessage): Promise<ProjectContext> {
 
     request.on("end", () => {
       try {
-        resolve(JSON.parse(body) as ProjectContext);
+        resolve(JSON.parse(body) as T);
       } catch {
         reject(new Error("Invalid JSON"));
       }
