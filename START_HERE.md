@@ -1,116 +1,89 @@
-# hey-micki Start Here
+# Start Here
 
-This document is the single starting point for future work on **hey-micki**.
+hey-micki is a local coding coach.
 
-hey-micki is a voice-first coding coach for vibe coders. The weekend MVP is intentionally smaller than the full vision: a VS Code sidebar that scans the current repository, sends compact project context to a local backend, and returns a practical shipping assessment.
+The MVP has two parts:
 
-## 1. Product in one sentence
+1. **VS Code plugin** — reads project context.
+2. **macOS app** — lets the user talk/type to Micki.
 
-hey-micki helps vibe coders understand what they are building, what is missing before shipping, and what exact next task to give to Cursor, Codex, Claude, or another coding agent.
+The plugin sends context to the macOS app. The app uses that context to answer questions like:
 
-## 2. Weekend MVP target
+- What is this project?
+- What should I do next?
+- Is this ready to ship?
+- What am I missing?
+- What prompt should I paste into Cursor/Codex/Claude?
 
-The first demo should prove this core loop:
+## Simple MVP loop
 
-1. Open a project in VS Code.
-2. Open the hey-micki sidebar.
-3. Click **Scan Repo**.
-4. The extension collects safe project context.
-5. The extension sends that context to a local backend.
-6. The backend analyses the project.
-7. The sidebar shows:
-   - project summary
-   - detected stack
-   - missing production pieces
-   - ship readiness score
-   - next best step
-   - simple explanation
-   - copyable Cursor/Codex/Claude prompt
+1. User opens a project in VS Code.
+2. User runs **Send Context to Micki** from the plugin.
+3. Plugin scans safe project context.
+4. Plugin sends that context to the local macOS app.
+5. User talks/types in the macOS app.
+6. Micki replies with a short, useful answer and an action card.
 
-Voice is optional for the weekend. If added, it must be a lightweight Web Speech API feature inside the VS Code webview only. Do not build a separate app yet.
+## MVP output
 
-## 3. Current repo status
+Micki should show:
 
-The repo currently starts as a clean documentation-first project. At the time these docs were added, the repo had:
+- project summary
+- detected stack
+- missing production pieces
+- readiness score
+- next best step
+- simple explanation
+- copyable prompt for Cursor/Codex/Claude
 
-- `README.md`
-- `DevelopmentWorkflow.md`
+## Build order
 
-No existing app scaffold, package manager, deployment setup, tests, or linting conventions were present yet.
+Build in this order:
 
-## 4. Core docs
+1. macOS app shell with a local health endpoint.
+2. VS Code plugin shell with one command.
+3. Plugin scans basic project context.
+4. Plugin sends context to the macOS app.
+5. macOS app stores the latest context in memory.
+6. User asks a typed question in the macOS app.
+7. macOS app returns a useful answer/action card.
+8. Add optional voice after typed chat works.
 
-Read these in this order before coding:
+## Do not build yet
 
-1. `DevelopmentWorkflow.md` — the human-in-the-loop development process.
-2. `AGENTS.md` — agent rules and hard constraints.
-3. `docs/prd.md` — product requirements for the MVP.
-4. `docs/technical_decisions.md` — stack decisions and non-goals.
-5. `tasks.md` — implementation tasks in order.
-6. `docs/local_setup.md` — how to run things locally once scaffolded.
-7. `docs/manual_qa.md` — human verification checklist.
-8. `docs/demo_script.md` — final demo scenario.
+Do not build these for the MVP:
 
-## 5. How to use Codex safely
+- accounts
+- payments
+- database
+- hosted backend
+- marketplace publishing
+- GitHub PR reviews
+- analytics
+- complex deployment
+- full production security scanner
 
-Do not give Codex the full product vision and ask it to build everything.
+## How to use Codex
 
-Use this pattern:
+Give Codex one task at a time.
+
+Use this format:
 
 ```text
-Read START_HERE.md, DevelopmentWorkflow.md, AGENTS.md, docs/prd.md, docs/technical_decisions.md, and tasks.md.
+Read START_HERE.md, AGENTS.md, docs/prd.md, docs/technical_decisions.md, and tasks.md.
 
-Work on exactly this task: [TASK ID AND NAME]
-
-Touch only the expected files listed in tasks.md unless you explain why another file is required.
+Work only on task [TASK ID].
 Do not start the next task.
 Do not add extra features.
-Show what changed and how to test it.
+After finishing, show files changed, how to test, expected output, and risks.
 ```
 
-## 6. Build order
+## Success criteria
 
-The practical MVP build order is:
+The MVP is successful when:
 
-1. Documentation and project rules.
-2. Backend health check.
-3. Backend `/api/analyse` mock endpoint.
-4. Deterministic project analysis service.
-5. VS Code extension scaffold.
-6. Command palette scan command.
-7. Safe context scanner.
-8. Extension-to-backend request.
-9. Sidebar webview.
-10. Render project assessment.
-11. Copyable agent prompt.
-12. Manual QA.
-13. Demo script.
-14. Optional voice.
-
-## 7. What not to build yet
-
-Do not build these until the local text-based MVP works:
-
-- standalone voice app
-- user accounts
-- database
-- persistent project history
-- payments
-- analytics
-- GitHub PR review integration
-- Cursor/Claude/Codex API integrations
-- marketplace publishing
-- production CI/CD
-- cloud deployment
-
-## 8. Definition of weekend success
-
-The weekend MVP is successful if someone can watch a demo and understand:
-
-- hey-micki can inspect a real codebase from VS Code;
-- it can explain what the project is;
-- it can identify missing shipping pieces;
-- it can produce a clear next action;
-- it can generate a useful prompt for a coding agent.
-
-The MVP does not need to be production-ready. It needs to be clear, useful, and demoable.
+- the plugin can scan a VS Code project
+- the plugin can send context to the local macOS app
+- the macOS app can show the latest project context
+- the user can ask what to do next
+- Micki gives a clear next step and a copyable coding-agent prompt
