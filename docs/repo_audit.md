@@ -1,74 +1,56 @@
 # Repo Audit
 
-## Purpose
+## Current direction
 
-This document captures the starting state of the hey-micki repository so future agents do not guess what already exists.
+The MVP is now:
 
-## Repository
+1. **macOS app** for talking/typing to Micki.
+2. **VS Code plugin** for sending project context to the app.
 
-- Name: `hey-micki`
-- Owner: `Salmaan-Bari`
-- Default branch: `main`
-- Visibility: private
-- Product description: AI tool to teach you while you vibe code and help you ship with best practices
+The plugin is the context source. The desktop app is the user interface.
 
-## Files present before planning docs
+## Starting repo state
 
-The repository initially contained:
+The repo originally contained:
 
 - `README.md`
 - `DevelopmentWorkflow.md`
 
-## Files added as planning foundation
+Planning docs were then added.
 
-The documentation foundation should include:
-
-- `START_HERE.md`
-- `AGENTS.md`
-- `docs/prd.md`
-- `docs/technical_decisions.md`
-- `docs/repo_audit.md`
-- `docs/local_setup.md`
-- `docs/manual_qa.md`
-- `docs/demo_script.md`
-- `docs/api_schema.md`
-- `tasks.md`
-
-## Current app/code status
-
-At the start of planning:
-
-- no VS Code extension scaffold exists
-- no backend scaffold exists
-- no `package.json` exists at the root
-- no lockfile exists
-- no frontend app exists
-- no database exists
-- no test setup exists
-- no lint/format setup exists
-- no deployment setup exists
-
-## Implication for future tasks
-
-Future implementation tasks should create the codebase from scratch using the documented MVP defaults.
-
-Agents should not claim that a stack, test framework, or deployment approach already exists unless it has been added in a later commit.
-
-## First implementation milestone
-
-The first coding milestone should be the backend health check because it is small, testable, and gives the extension a target to call later.
-
-Recommended first coding task:
+## Current planned folders
 
 ```text
-P3.1 Scaffold backend API with GET /health on port 8787.
+apps/desktop
+apps/extension
+docs
+tasks.md
 ```
 
-After that, build:
+## App/code status
 
-1. `POST /api/analyse` mock endpoint
-2. deterministic analysis service
-3. VS Code extension scaffold
-4. safe context scanner
-5. sidebar UI
-6. full integration flow
+At the time of this audit, the repo may still be mostly documentation-first.
+
+Future agents should check the repo before coding and not assume these folders exist yet.
+
+## First implementation task
+
+Build the desktop app shell first.
+
+Reason: the VS Code plugin needs somewhere to send context.
+
+First task:
+
+```text
+D1: Create desktop app shell with local health endpoint.
+```
+
+After that:
+
+1. add context endpoint to desktop app
+2. add typed chat UI to desktop app
+3. scaffold VS Code plugin
+4. make plugin scan context
+5. make plugin send context to desktop app
+6. add deterministic Micki response
+7. run manual QA
