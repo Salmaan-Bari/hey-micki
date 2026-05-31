@@ -1,60 +1,64 @@
-# Agent Workflow Rules
+# Agent Rules
 
-Use this file as the operating guide for Codex, Claude, Cursor, or any other coding agent working on hey-micki.
+These rules are for Codex, Claude, Cursor, or any coding agent working on hey-micki.
 
-## Read these first
+## Read first
 
-Before doing any task, read:
+Before coding, read:
 
 1. `START_HERE.md`
-2. `DevelopmentWorkflow.md`
-3. `AGENTS.md`
-4. `docs/prd.md`
-5. `docs/technical_decisions.md`
-6. `tasks.md`
+2. `AGENTS.md`
+3. `docs/prd.md`
+4. `docs/technical_decisions.md`
+5. `tasks.md`
 
 ## Main rule
 
-Work on one task only. Do not move to the next task without human approval.
+Do one task only.
 
-## Scope rules
-
-Do not add extra features. Do not refactor unrelated files. Do not install new tools unless the task asks for it. Do not change the architecture without approval.
+Do not move to the next task unless the human approves it.
 
 ## MVP focus
 
-Build the local text-based MVP first:
+The MVP is:
 
-- VS Code sidebar
-- repo scanner
-- local backend analysis endpoint
-- readiness score
-- missing production pieces
-- next best step
-- copyable coding-agent prompt
+- a VS Code plugin that scans project context
+- a macOS app where the user talks/types to Micki
+- a local connection between the plugin and app
 
-Voice comes later and is optional.
+The plugin is for context. The macOS app is for conversation.
 
-## Local-first rule
+## Do not add yet
 
-The first demo should run locally. Do not build cloud deployment, accounts, billing, or marketplace publishing until the MVP works locally.
+Do not add:
 
-## Verification rule
+- accounts
+- payments
+- database
+- hosted backend
+- analytics
+- marketplace publishing
+- GitHub integrations
+- complex deployment
 
-Every task must include:
+## File scanning rule
 
-- files changed
-- how to test
-- expected result
-- any risks or blockers
+The plugin should only scan useful project files.
 
-A task is complete only when the human verifies it.
+Skip large/generated folders such as:
 
-## Repo scanning rule
+- `node_modules`
+- `.git`
+- `.next`
+- `dist`
+- `build`
+- `coverage`
+- `.venv`
+- `venv`
 
-The extension should read only safe project context. It should skip large/generated folders like `node_modules`, `.git`, `.next`, `dist`, `build`, `coverage`, `.venv`, and `venv`.
+Use file count and file size limits.
 
-## Response format after a task
+## After each task, report
 
 ```text
 Task completed: [TASK ID]
@@ -68,6 +72,6 @@ How to test:
 Expected result:
 - ...
 
-Notes / risks:
+Risks/blockers:
 - ...
 ```
