@@ -1,0 +1,36 @@
+{
+  "name": "hey-micki-extension",
+  "displayName": "hey-micki",
+  "description": "VS Code context sender for hey-micki.",
+  "version": "0.0.1",
+  "private": true,
+  "publisher": "hey-micki",
+  "engines": {
+    "vscode": "^1.92.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:heyMicki.sendContext"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "heyMicki.sendContext",
+        "title": "Send Context to Micki"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "build": "npm run compile",
+    "watch": "tsc -w -p ."
+  },
+  "devDependencies": {
+    "@types/node": "20.17.10",
+    "@types/vscode": "1.92.0",
+    "typescript": "5.6.3"
+  }
+}
