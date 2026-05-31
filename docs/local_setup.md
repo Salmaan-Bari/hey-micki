@@ -1,8 +1,9 @@
-# Local Setup Guide
+# Local Setup
 
-This guide explains how to run hey-micki locally once the MVP scaffold exists.
+The MVP has two local apps:
 
-At the time this guide was created, the repo was documentation-only. Commands below are the intended setup once the backend and extension tasks have been completed.
+1. `apps/desktop` — macOS app for chatting with Micki
+2. `apps/extension` — VS Code plugin for sending project context
 
 ## Prerequisites
 
@@ -13,60 +14,44 @@ Install:
 - VS Code
 - Git
 
-Recommended VS Code extensions:
-
-- ESLint, once linting exists
-- Prettier, once formatting exists
-
 ## Intended folder structure
 
 ```text
 hey-micki/
   apps/
-    api/
+    desktop/
       package.json
       src/
-        server.ts
     extension/
       package.json
       src/
-        extension.ts
-      media/
   docs/
   tasks.md
-  START_HERE.md
-  AGENTS.md
 ```
 
-## Backend local run
+## Run the desktop app
 
-Once `apps/api` exists:
+Once `apps/desktop` exists:
 
 ```bash
-cd apps/api
+cd apps/desktop
 npm install
 npm run dev
 ```
 
-Expected result:
-
-```text
-hey-micki API listening on http://localhost:8787
-```
-
-Health check:
+Check the local server:
 
 ```bash
-curl http://localhost:8787/health
+curl http://localhost:3737/health
 ```
 
-Expected result:
+Expected:
 
 ```json
 { "ok": true }
 ```
 
-## Extension local run
+## Run the VS Code plugin
 
 Once `apps/extension` exists:
 
@@ -79,66 +64,39 @@ npm run compile
 Then:
 
 1. Open the repo in VS Code.
-2. Open the Run and Debug panel.
-3. Launch the Extension Development Host.
-4. In the new VS Code window, open a sample project.
-5. Open the hey-micki sidebar or run the command palette command.
+2. Start the Extension Development Host.
+3. Open a test project in the new VS Code window.
+4. Run **Send Context to Micki**.
 
-## Expected MVP flow
+## MVP test flow
 
-1. Start backend on port `8787`.
-2. Launch extension development host.
-3. Open a project folder.
-4. Click **Scan Repo**.
-5. See project analysis in the sidebar.
-6. Copy the generated agent prompt.
-
-## Environment configuration
-
-The MVP should work without model configuration by using deterministic analysis.
-
-If optional model support is added later, use an example file such as:
-
-```text
-apps/api/.env.example
-```
-
-Do not commit local environment files.
+1. Start the desktop app.
+2. Confirm `http://localhost:3737/health` works.
+3. Launch the VS Code plugin.
+4. Open a sample project.
+5. Run **Send Context to Micki**.
+6. Desktop app receives the context.
+7. In the desktop app, ask: **What should I do next?**
+8. Micki returns a useful answer and copyable prompt.
 
 ## Troubleshooting
 
-### Backend is offline
+### Plugin cannot connect
 
-Check that the API is running:
+Make sure the desktop app is running and this works:
 
 ```bash
-curl http://localhost:8787/health
+curl http://localhost:3737/health
 ```
 
-### Extension cannot connect
+### Context does not appear in the app
 
-Confirm the backend URL in the extension points to:
+Check:
 
-```text
-http://localhost:8787/api/analyse
-```
+- the plugin command was run
+- the desktop app local server is running
+- the plugin is sending to `http://localhost:3737/context`
 
-### Sidebar is blank
+### App answer is weak
 
-Check the Extension Development Host logs and the browser/webview console.
-
-### Scan is too slow
-
-Confirm the scanner skips generated folders and uses file-count limits.
-
-## First real local test
-
-Use a small sample app first, not a huge real project.
-
-Recommended sample:
-
-```text
-demo/sample-next-app
-```
-
-The sample should intentionally miss several production pieces so hey-micki has something useful to detect.
+That is okay for the first MVP. Start with deterministic answers. Improve the answer quality later.
