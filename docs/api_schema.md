@@ -1,164 +1,109 @@
-# API Schema
+# Local API Schema
 
-This document defines the MVP request and response contract between the VS Code extension and the local backend.
+This is the simple local contract between the VS Code plugin and the macOS app.
 
-## Endpoint
+The macOS app runs a small local server.
 
-```text
-POST /api/analyse
-```
-
-Local URL:
+Default local URL:
 
 ```text
-http://localhost:8787/api/analyse
+http://localhost:3737
 ```
 
-## Request shape
+## 1. Health check
+
+```text
+GET /health
+```
+
+Response:
+
+```json
+{ "ok": true }
+```
+
+Use this to check the macOS app is running before the plugin sends context.
+
+## 2. Send project context
+
+```text
+POST /context
+```
+
+The VS Code plugin calls this when the user runs **Send Context to Micki**.
+
+Request:
 
 ```json
 {
-  "workspaceName": "sample-next-app",
-  "workspaceRootName": "sample-next-app",
-  "userQuestion": "is this ready to ship?",
-  "fileTree": [
-    "package.json",
-    "README.md",
-    "src/app/page.tsx"
-  ],
+  "workspaceName": "sample-app",
+  "fileTree": ["package.json", "README.md", "src/app/page.tsx"],
   "packageJson": {
-    "name": "sample-next-app",
-    "scripts": {
-      "dev": "next dev",
-      "build": "next build"
-    },
+    "name": "sample-app",
     "dependencies": {
       "next": "latest",
       "react": "latest"
-    },
-    "devDependencies": {
-      "typescript": "latest"
     }
   },
-  "readme": "Short capped README content.",
+  "readme": "Short README preview",
   "currentFile": {
     "path": "src/app/page.tsx",
     "languageId": "typescriptreact",
-    "contentPreview": "Capped current file content."
+    "contentPreview": "Short current file preview"
   },
-  "gitInfo": {
-    "branch": "main",
-    "hasUncommittedChanges": true
-  },
-  "detectedSignals": {
+  "signals": {
     "frameworks": ["Next.js", "React"],
     "packageManager": "npm",
     "hasAuth": false,
     "hasDatabase": false,
-    "hasPayments": false,
-    "hasDeploymentConfig": false,
-    "hasEnvExample": false,
     "hasTests": false,
-    "hasSecurityHeaders": false
+    "hasDeploymentConfig": false
   }
 }
 ```
 
-## Required request fields for MVP
-
-- `workspaceName`
-- `fileTree`
-- `detectedSignals`
-
-All other fields may be missing or null if unavailable.
-
-## Response shape
+Response:
 
 ```json
 {
-  "projectSummary": "This looks like a small Next.js app with a basic frontend scaffold.",
-  "detectedStack": ["Next.js", "React", "TypeScript"],
-  "missingProductionPieces": [
-    {
-      "name": "Authentication",
-      "status": "missing",
-      "severity": "high",
-      "evidence": "No auth-related dependencies or routes were detected."
-    },
-    {
-      "name": "Deployment",
-      "status": "missing",
-      "severity": "medium",
-      "evidence": "No deployment config was detected."
-    }
-  ],
+  "ok": true,
+  "message": "Context received"
+}
+```
+
+## 3. Ask Micki
+
+```text
+POST /ask
+```
+
+The macOS app calls this internally when the user asks a typed question.
+
+Request:
+
+```json
+{
+  "question": "What should I do next?"
+}
+```
+
+Response:
+
+```json
+{
+  "projectSummary": "Short summary of the latest project context.",
+  "detectedStack": ["Next.js", "TypeScript"],
+  "missingProductionPieces": ["auth", "database", "tests"],
   "readinessScore": 35,
-  "nextBestStep": "Add basic environment configuration and a clear README setup section.",
-  "simpleExplanation": "You have the start of an app, but it is missing several basics needed before a real launch.",
-  "agentPrompt": "You are working on this project. Add an .env.example and update the README with local setup instructions. Do not add unrelated features."
+  "nextBestStep": "Add a basic README setup section.",
+  "simpleExplanation": "The project has a good start but is missing shipping basics.",
+  "agentPrompt": "Paste-ready prompt for Cursor, Codex, or Claude."
 }
 ```
 
-## Response field rules
+## MVP rules
 
-### `projectSummary`
-
-Short plain-English summary. Maximum 2 sentences.
-
-### `detectedStack`
-
-Array of detected technologies. Use evidence from package files and file tree.
-
-### `missingProductionPieces`
-
-Array of checklist items. Each item should include:
-
-- `name`
-- `status`: `present`, `missing`, or `unknown`
-- `severity`: `low`, `medium`, or `high`
-- `evidence`
-
-### `readinessScore`
-
-Integer from 0 to 100.
-
-Suggested MVP scoring:
-
-- start from 100
-- subtract for missing high-severity pieces
-- subtract less for medium/low-severity pieces
-- clamp between 0 and 100
-
-### `nextBestStep`
-
-One concrete next task only.
-
-### `simpleExplanation`
-
-Short explanation that a beginner can understand.
-
-### `agentPrompt`
-
-Paste-ready prompt for Cursor/Codex/Claude.
-
-Must include:
-
-- one task only
-- expected files if known
-- acceptance criteria
-- do-not-do-yet note
-
-## Error response shape
-
-```json
-{
-  "error": {
-    "message": "Invalid request payload.",
-    "code": "INVALID_PAYLOAD"
-  }
-}
-```
-
-## MVP note
-
-The backend should be able to return useful deterministic responses without a live LLM. LLM support can improve wording later, but should not be required for the demo.
+- Store only the latest context in memory.
+- Return simple deterministic answers first.
+- Add model support later.
+- Keep responses short.
