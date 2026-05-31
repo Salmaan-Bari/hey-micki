@@ -1,0 +1,26 @@
+{
+  "name": "hey-micki-desktop",
+  "version": "0.0.1",
+  "private": true,
+  "description": "hey-micki macOS desktop app shell",
+  "main": "dist/main/main.js",
+  "type": "module",
+  "scripts": {
+    "postinstall": "node scripts/repair-electron.mjs",
+    "dev": "node scripts/dev.mjs",
+    "build": "tsc -p tsconfig.main.json && vite build"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.17.10",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.4",
+    "electron": "42.3.0",
+    "typescript": "5.6.3",
+    "vite": "5.4.21"
+  }
+}
