@@ -1,183 +1,153 @@
 # MVP Tasks
 
-Build the simplest possible MVP:
+Build one simple vertical slice:
 
-1. **macOS app** where the user talks/types to Micki.
-2. **VS Code plugin** that sends project context to the app.
+1. **VS Code plugin** reads project context.
+2. **macOS desktop app** lets the user type or speak to Micki.
+3. Micki explains the project and gives a next step.
 
-Do one task at a time. Do not build extra features.
-
----
-
-## Milestone 1: Desktop app shell
-
-Goal: create the app that the plugin will send context to.
-
-### D1 Create desktop app shell
-
-- [ ] Create `apps/desktop`.
-- [ ] Use Electron + React + TypeScript.
-- [ ] App window opens.
-- [ ] Local server runs on port `3737`.
-- [ ] `GET /health` returns `{ "ok": true }`.
-
-Expected files:
-
-- `apps/desktop/package.json`
-- `apps/desktop/src/main.ts`
-- `apps/desktop/src/server.ts`
-- `apps/desktop/src/renderer/App.tsx`
-
-Do not add project context yet.
-
-### D2 Add context endpoint
-
-- [ ] Add `POST /context` to the desktop app local server.
-- [ ] Store the latest context in memory.
-- [ ] Return `{ "ok": true, "message": "Context received" }`.
-- [ ] Show in the app whether context has been received.
-
-Expected files:
-
-- `apps/desktop/src/server.ts`
-- `apps/desktop/src/contextStore.ts`
-- `apps/desktop/src/renderer/App.tsx`
-
-Do not add AI/model calls yet.
-
-### D3 Add typed question UI
-
-- [ ] Add a text input in the desktop app.
-- [ ] Add an Ask button.
-- [ ] User can ask: `What should I do next?`
-- [ ] App returns a simple deterministic answer using the latest context.
-
-Expected files:
-
-- `apps/desktop/src/renderer/App.tsx`
-- `apps/desktop/src/answerMicki.ts`
-
-Do not add voice yet.
+Do one task at a time.
 
 ---
 
-## Milestone 2: VS Code plugin shell
+## Completed
 
-Goal: create a plugin command that can later send context to the desktop app.
+- [x] D1 Desktop app shell
+- [x] D2 Context endpoint
+- [x] D3 Typed question UI
+- [x] V1 VS Code plugin shell
+- [x] V2 Basic project context scanner
+- [x] V3 Send context to desktop app
+- [x] DEMO1 Sample demo project fixture
+- [x] V4 Improved context detection
+- [x] A1 Better deterministic Micki answers
+- [x] UI1 Demo UI polish
 
-### V1 Create VS Code plugin shell
+---
 
-- [ ] Create `apps/extension`.
-- [ ] Use TypeScript.
-- [ ] Plugin launches in VS Code Extension Development Host.
-- [ ] Add command: `Send Context to Micki`.
-- [ ] Running the command shows a simple success message.
+## Next tasks for Friday demo
 
-Expected files:
+### V5 Active context refresh
 
-- `apps/extension/package.json`
-- `apps/extension/tsconfig.json`
-- `apps/extension/src/extension.ts`
+Goal: make Micki feel aware of the file/project the user is currently working on.
 
-Do not scan files yet.
+Build:
 
-### V2 Scan basic project context
-
-- [ ] Detect workspace name.
-- [ ] Read capped file tree.
-- [ ] Read `package.json` if present.
-- [ ] Read README if present.
-- [ ] Read current file path/language/preview if available.
-- [ ] Skip large generated folders.
+- [ ] Keep `Send Context to Micki` working.
+- [ ] Include current active file path, language, and preview in the context.
+- [ ] Add clearer success/error messages.
+- [ ] Show or log when context was last sent.
+- [ ] If low-risk, refresh context when the user saves a file.
 
 Expected files:
 
 - `apps/extension/src/context.ts`
-
-Do not send context yet.
-
-### V3 Send context to desktop app
-
-- [ ] Send scanned context to `http://localhost:3737/context`.
-- [ ] Show success if the app receives context.
-- [ ] Show clear error if the desktop app is not running.
-
-Expected files:
-
 - `apps/extension/src/extension.ts`
-- `apps/extension/src/context.ts`
 - `apps/extension/src/client.ts`
+- `apps/desktop/src/renderer/App.tsx` only if needed
+
+Acceptance criteria:
+
+- `npm run compile` passes in `apps/extension`.
+- Desktop app still receives context.
+- Context includes active file info when available.
+- No voice or model calls are added.
 
 ---
 
-## Milestone 3: Micki answer quality
+### VOICE1 Push-to-talk input
 
-Goal: make the typed answer useful enough for demo.
+Goal: let the user speak a question to Micki in the desktop app.
 
-### A1 Add project analysis
+Build:
 
-- [ ] Detect simple stack from package files.
-- [ ] Detect missing production pieces.
-- [ ] Create readiness score.
-- [ ] Create next best step.
-- [ ] Create copyable prompt for Cursor/Codex/Claude.
-
-Expected files:
-
-- `apps/desktop/src/analyseProject.ts`
-- `apps/desktop/src/answerMicki.ts`
-
-Do not add live AI/model calls yet.
-
-### A2 Render answer clearly
-
-- [ ] Show project summary.
-- [ ] Show detected stack.
-- [ ] Show missing pieces.
-- [ ] Show readiness score.
-- [ ] Show next best step.
-- [ ] Show copyable coding-agent prompt.
+- [ ] Add a microphone button.
+- [ ] Use browser/Electron speech recognition if available.
+- [ ] Put the transcript into the existing question input.
+- [ ] Keep typing as the fallback.
+- [ ] Show a clear message if speech recognition is unavailable.
 
 Expected files:
 
 - `apps/desktop/src/renderer/App.tsx`
+- `apps/desktop/src/renderer/styles.css`
+
+Acceptance criteria:
+
+- `npm run build` passes in `apps/desktop`.
+- Typed input still works.
+- Speech input works where supported, or fails clearly where unsupported.
+- No always-listening behaviour.
+- No model calls are added.
 
 ---
 
-## Milestone 4: Demo and QA
+### COACH1 Teaching answer style
 
-### Q1 Manual QA
+Goal: make Micki sound more like a helpful coding coach.
 
-Use `docs/manual_qa.md`.
+Build:
 
-MVP is ready when:
+- [ ] Improve response wording for common questions.
+- [ ] Support simple intents:
+  - `What am I building?`
+  - `What should I do next?`
+  - `Is this ready to ship?`
+  - `Explain this project simply.`
+- [ ] Give one decision point.
+- [ ] Keep the coding-agent prompt focused on one task.
+- [ ] Keep deterministic rules for now.
 
-- [ ] desktop app runs
-- [ ] health endpoint works
-- [ ] VS Code plugin runs
-- [ ] plugin scans project context
-- [ ] plugin sends context to desktop app
-- [ ] desktop app answers a typed question
-- [ ] answer includes a next step and prompt
+Expected files:
 
-### Q2 Demo script
+- `apps/desktop/src/answerMicki.ts`
+- `apps/desktop/src/renderer/App.tsx` only if needed
 
-Use `docs/demo_script.md`.
+Acceptance criteria:
 
-Demo should take 3-5 minutes.
+- `npm run build` passes in `apps/desktop`.
+- Different common questions produce slightly different useful answers.
+- No model calls are added.
+
+---
+
+### DEMO2 Final demo runbook
+
+Goal: make the Friday demo easy to run.
+
+Build:
+
+- [ ] Update `docs/demo_script.md`.
+- [ ] Add exact commands to start the desktop app.
+- [ ] Add exact steps to launch the VS Code extension.
+- [ ] Use `demo/sample-vibe-app` as the demo project.
+- [ ] Include the exact question to ask Micki.
+- [ ] Include expected output.
+- [ ] Include fallback if port `3737` is already in use.
+- [ ] Include fallback if voice is unsupported.
+
+Expected files:
+
+- `docs/demo_script.md`
+- `docs/manual_qa.md` if useful
+
+Acceptance criteria:
+
+- Someone can follow the runbook and demo the product in 3-5 minutes.
 
 ---
 
 ## Later, not now
 
-Do not build yet:
+Do not build before the Friday demo:
 
-- voice input
-- AI/model calls
 - accounts
-- database
 - payments
+- database
 - hosted backend
 - marketplace publishing
-- analytics
 - GitHub PR reviews
+- analytics
+- complex deployment
+- packaged installer
+- full production security scanner
