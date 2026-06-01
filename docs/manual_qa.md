@@ -32,9 +32,11 @@ Use this checklist before calling the MVP demo-ready.
 ## Plugin to app connection
 
 - [ ] Desktop app is running.
+- [ ] `GET http://localhost:3737/health` returns `{ "ok": true }`.
 - [ ] Plugin sends context to `http://localhost:3737/context`.
 - [ ] Desktop app confirms context was received.
 - [ ] Desktop app shows or uses the latest context.
+- [ ] Stop the desktop app, run **Send Context to Micki**, and confirm VS Code shows a clear error that the Micki desktop app is not running.
 
 ## Micki response
 
