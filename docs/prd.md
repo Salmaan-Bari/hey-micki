@@ -7,9 +7,9 @@ hey-micki is a local coding coach for vibe coders.
 It has two pieces:
 
 1. **VS Code plugin** — scans the current project.
-2. **macOS app** — lets the user talk or type to Micki.
+2. **macOS desktop app** — lets the user type or speak to Micki.
 
-The plugin gives the macOS app project context. The macOS app gives the user clear advice.
+The plugin gives the desktop app project context. The desktop app gives the user clear guidance.
 
 ## User problem
 
@@ -17,39 +17,39 @@ Vibe coders can build quickly, but they often lose track of:
 
 - what the project currently does
 - what is missing before shipping
+- what decision to make next
 - what to ask the coding agent next
-- whether the app is actually ready
 
-## MVP goal
+## Current working MVP
 
-Create a local demo where:
+The current MVP already proves this loop:
 
-1. the VS Code plugin scans a project
-2. the plugin sends context to the macOS app
-3. the macOS app stores the latest context in memory
-4. the user asks a typed question
-5. Micki replies with a short answer and a next-step prompt
+1. The VS Code plugin scans a project.
+2. The plugin sends context to the desktop app.
+3. The desktop app stores the latest context in memory.
+4. The user asks a typed question.
+5. Micki replies with a useful answer and a copyable prompt.
 
-Voice can come after typed chat works.
+## Friday demo goal
 
-## MVP user flow
+The Friday demo should feel like this:
 
-1. User opens a project in VS Code.
-2. User runs **Send Context to Micki**.
-3. Plugin scans basic project context.
-4. Plugin sends this context to the macOS app over localhost.
-5. User opens the macOS app.
-6. User asks: **What should I do next?**
-7. Micki shows a useful answer and a prompt to paste into a coding agent.
+1. Open `demo/sample-vibe-app` in VS Code.
+2. Send or refresh context from the plugin.
+3. Ask Micki by typing or using push-to-talk.
+4. Micki explains what is being built.
+5. Micki identifies the key missing pieces.
+6. Micki recommends one practical next step.
+7. Micki gives one focused prompt for Cursor/Codex/Claude.
 
 ## Project context to collect
 
-Collect only simple, useful context:
+Collect only useful local context:
 
 - file tree
 - package files
 - README
-- current file
+- current active file
 - basic stack signals
 - missing production signals
 
@@ -60,12 +60,12 @@ Collect only simple, useful context:
 - missing production pieces
 - readiness score
 - next best step
-- simple explanation
+- simple teaching explanation
 - copyable prompt for Cursor, Codex, or Claude
 
-## Non-goals
+## Non-goals before Friday
 
-Do not build these in the MVP:
+Do not build these before the Friday demo:
 
 - accounts
 - payments
@@ -76,16 +76,19 @@ Do not build these in the MVP:
 - analytics
 - GitHub PR reviews
 - direct coding-agent integrations
+- packaged installer
 - complex deployment
+- always-on listening
 
 ## Done means
 
-The MVP is done when:
+The Friday demo is done when:
 
-- the macOS app runs locally
+- the desktop app runs locally
 - the plugin runs in VS Code
-- the plugin sends project context to the app
-- the app shows the latest project context
-- the user can ask a typed question
-- Micki gives a useful answer and copyable prompt
+- the plugin sends fresh project context to the app
+- the app shows the latest project context clearly
+- the user can type or speak a question
+- Micki gives a useful coaching answer
+- Micki gives a clear next step and copyable prompt
 - manual QA passes
