@@ -20,6 +20,7 @@ export type ProjectContext = {
   fileTree: string[];
   packageJson?: {
     name?: string;
+    scripts?: Record<string, string>;
     dependencies?: Record<string, string>;
     devDependencies?: Record<string, string>;
   };
@@ -50,7 +51,7 @@ export async function scanProjectContext(): Promise<ProjectContext> {
   const packageJson = await readPackageJson(workspaceFolder);
   const readme = await readOptionalTextFile(workspaceFolder, "README.md");
   const currentFile = getCurrentFile(workspaceFolder);
-  const packageManager = await detectPackageManager(workspaceFolder);
+  const packageManager = await detectPackageManager(workspaceFolder, packageJson);
   const frameworks = detectFrameworks(packageJson);
 
   return {
@@ -122,6 +123,7 @@ async function readPackageJson(workspaceFolder: vscode.WorkspaceFolder) {
     const parsed = JSON.parse(text) as ProjectContext["packageJson"];
     return {
       name: parsed?.name,
+      scripts: parsed?.scripts,
       dependencies: parsed?.dependencies,
       devDependencies: parsed?.devDependencies
     };
@@ -171,7 +173,14 @@ function getCurrentFile(workspaceFolder: vscode.WorkspaceFolder) {
   };
 }
 
-async function detectPackageManager(workspaceFolder: vscode.WorkspaceFolder) {
+async function detectPackageManager(
+  workspaceFolder: vscode.WorkspaceFolder,
+  packageJson: ProjectContext["packageJson"]
+) {
+  if (await fileExists(workspaceFolder, "package-lock.json")) {
+    return "npm";
+  }
+
   if (await fileExists(workspaceFolder, "pnpm-lock.yaml")) {
     return "pnpm";
   }
@@ -180,12 +189,12 @@ async function detectPackageManager(workspaceFolder: vscode.WorkspaceFolder) {
     return "yarn";
   }
 
-  if (await fileExists(workspaceFolder, "package-lock.json")) {
-    return "npm";
-  }
-
   if (await fileExists(workspaceFolder, "bun.lockb")) {
     return "bun";
+  }
+
+  if (hasNpmStyleScripts(packageJson)) {
+    return "npm";
   }
 
   return "unknown";
@@ -201,17 +210,16 @@ async function fileExists(workspaceFolder: vscode.WorkspaceFolder, relativePath:
 }
 
 function detectFrameworks(packageJson: ProjectContext["packageJson"]) {
-  const dependencies = {
-    ...packageJson?.dependencies,
-    ...packageJson?.devDependencies
-  };
+  const dependencies = getAllDependencies(packageJson);
   const frameworks = new Set<string>();
 
   const dependencyToFramework: Record<string, string> = {
     next: "Next.js",
     react: "React",
+    "react-dom": "React",
     vue: "Vue",
     "@vitejs/plugin-react": "Vite",
+    "@vitejs/plugin-react-swc": "Vite",
     vite: "Vite",
     svelte: "Svelte",
     astro: "Astro",
@@ -231,10 +239,26 @@ function detectFrameworks(packageJson: ProjectContext["packageJson"]) {
 }
 
 function hasAnyDependency(packageJson: ProjectContext["packageJson"], dependencyNames: string[]) {
-  const dependencies = {
+  const dependencies = getAllDependencies(packageJson);
+
+  return dependencyNames.some((dependencyName) => Boolean(dependencies[dependencyName]));
+}
+
+function getAllDependencies(packageJson: ProjectContext["packageJson"]) {
+  return {
     ...packageJson?.dependencies,
     ...packageJson?.devDependencies
   };
+}
 
-  return dependencyNames.some((dependencyName) => Boolean(dependencies[dependencyName]));
+function hasNpmStyleScripts(packageJson: ProjectContext["packageJson"]) {
+  if (!packageJson?.scripts) {
+    return false;
+  }
+
+  return Object.values(packageJson.scripts).some(
+    (script) =>
+      typeof script === "string" &&
+      /\b(vite|tsc|react-scripts|next|npm|node|tsx|webpack|parcel|astro|svelte-kit)\b/.test(script)
+  );
 }
