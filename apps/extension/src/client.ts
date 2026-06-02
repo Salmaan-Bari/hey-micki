@@ -82,6 +82,10 @@ function postJson<TResponse>(endpoint: string, body: unknown): Promise<TResponse
 
     request.on("error", (error: NodeJS.ErrnoException) => {
       if (error.code === "ECONNREFUSED" || error.code === "ENOTFOUND" || error.code === "EHOSTUNREACH") {
+        console.log("hey-micki desktop app not running:", {
+          endpoint,
+          code: error.code
+        });
         reject(new Error("Micki desktop app is not running. Start the Micki desktop app and try again."));
         return;
       }

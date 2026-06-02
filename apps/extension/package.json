@@ -12,6 +12,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onStartupFinished",
     "onCommand:heyMicki.sendContext"
   ],
   "main": "./dist/extension.js",

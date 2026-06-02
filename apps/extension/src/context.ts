@@ -80,6 +80,7 @@ export function getContextSummary(context: ProjectContext) {
     frameworks: context.signals.frameworks,
     packageManager: context.signals.packageManager,
     currentFile: context.currentFile?.path ?? null,
+    currentFileName: context.currentFile ? path.basename(context.currentFile.path) : null,
     hasPackageJson: Boolean(context.packageJson),
     hasReadme: Boolean(context.readme)
   };
@@ -157,8 +158,9 @@ function getCurrentFile(workspaceFolder: vscode.WorkspaceFolder) {
   }
 
   const relativePath = vscode.workspace.asRelativePath(document.uri, false);
+  const normalizedPath = path.posix.normalize(relativePath);
 
-  if (!relativePath || relativePath.startsWith("..")) {
+  if (!normalizedPath || normalizedPath.startsWith("..") || path.isAbsolute(normalizedPath)) {
     return undefined;
   }
 
@@ -166,11 +168,25 @@ function getCurrentFile(workspaceFolder: vscode.WorkspaceFolder) {
     return undefined;
   }
 
+  if (isExcludedPath(normalizedPath)) {
+    return undefined;
+  }
+
   return {
-    path: path.posix.normalize(relativePath),
+    path: normalizedPath,
     languageId: document.languageId,
-    contentPreview: document.getText().slice(0, MAX_ACTIVE_FILE_PREVIEW_CHARS)
+    contentPreview: createContentPreview(document.getText(), MAX_ACTIVE_FILE_PREVIEW_CHARS)
   };
+}
+
+function createContentPreview(text: string, maxChars: number) {
+  return text.replace(/\r\n/g, "\n").slice(0, maxChars);
+}
+
+function isExcludedPath(relativePath: string) {
+  const parts = relativePath.split("/");
+
+  return parts.some((part) => EXCLUDED_FOLDERS.includes(part));
 }
 
 async function detectPackageManager(
